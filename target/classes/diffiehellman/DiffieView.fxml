@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<BorderPane fx:id="rootPane" prefWidth="1520" prefHeight="850" styleClass="root-window" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="diffiehellman.StudioController">
+  <top>
+    <VBox styleClass="top-chrome-wrapper">
+      <HBox fx:id="customTitleBar" alignment="CENTER_LEFT" spacing="10" styleClass="custom-window-bar" onMousePressed="#titlePressed" onMouseDragged="#titleDragged" onMouseClicked="#titleClicked">
+        <padding><Insets top="6" right="10" bottom="6" left="16"/></padding>
+        <StackPane prefWidth="20" prefHeight="20" styleClass="window-bar-icon"><ImageView fitWidth="18" fitHeight="18" preserveRatio="true"><image><Image url="@studio-mark.png"/></image></ImageView></StackPane>
+        <Label text="DIFFIE–HELLMAN / KEY EXCHANGE STUDIO     •     EDUCATIONAL WORKSPACE" styleClass="window-bar-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="—" onAction="#minimize" styleClass="win-btn" focusTraversable="false"/>
+        <Button fx:id="maximizeWinBtn" text="▢" onAction="#maximize" styleClass="win-btn" focusTraversable="false"/>
+        <Button text="✕" onAction="#close" styleClass="win-btn-close" focusTraversable="false"/>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="18" styleClass="header-container">
+        <padding><Insets top="12" right="24" bottom="14" left="24"/></padding>
+        <StackPane prefWidth="52" prefHeight="52" minWidth="52" minHeight="52" styleClass="logo-square"><ImageView fitWidth="52" fitHeight="52" preserveRatio="true"><image><Image url="@studio-mark.png"/></image></ImageView></StackPane>
+        <VBox spacing="3" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"><HBox alignment="CENTER_LEFT" spacing="10"><Label text="Diffie–Hellman Studio" styleClass="app-title"/><Label text="LEARNING STUDIO  /  02" styleClass="edition-badge"/></HBox><Label text="Agree on public parameters. Exchange public values. Discover the same shared secret." styleClass="app-subtitle" wrapText="true"/></VBox>
+        <HBox spacing="6" alignment="CENTER" styleClass="stepper-bar">
+          <Label fx:id="step1" text="① Agree P &amp; G" styleClass="step-pill-active"/><Label text="›" styleClass="step-arrow"/>
+          <Label fx:id="step2" text="② Private keys" styleClass="step-pill"/><Label text="›" styleClass="step-arrow"/>
+          <Label fx:id="step3" text="③ Exchange" styleClass="step-pill"/><Label text="›" styleClass="step-arrow"/>
+          <Label fx:id="step4" text="④ Shared secret" styleClass="step-pill"/>
+        </HBox>
+        <Button fx:id="themeButton" text="◐  Dark" onAction="#toggleTheme" styleClass="btn-theme"/>
+        <Button text="Reset" onAction="#reset" styleClass="btn-danger"/>
+      </HBox>
+    </VBox>
+  </top>
+  <center>
+    <ScrollPane fx:id="mainScrollPane" fitToWidth="true" fitToHeight="true" styleClass="main-scroll-pane">
+      <content>
+        <GridPane fx:id="contentGrid" hgap="16" vgap="12">
+          <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+          <columnConstraints><ColumnConstraints percentWidth="50" hgrow="ALWAYS"/><ColumnConstraints percentWidth="50" hgrow="ALWAYS"/></columnConstraints>
+          <rowConstraints><RowConstraints vgrow="ALWAYS" fillHeight="true"/></rowConstraints>
+          <VBox GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" spacing="11" styleClass="phase-card" minWidth="0" maxHeight="Infinity">
+            <HBox alignment="CENTER_LEFT" spacing="10"><Label text="01 / MATH" styleClass="phase-badge"/><Label text="Key generation" styleClass="section-header"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="validationBadge" text="Awaiting input" styleClass="status-badge-neutral"/></HBox>
+            <Label text="Alice and Bob agree on P and G publicly. Their private keys never travel across the channel." wrapText="true" styleClass="helper-text"/>
+            <Separator/>
+            <VBox spacing="8" styleClass="step-box" VBox.vgrow="ALWAYS">
+              <HBox alignment="CENTER_LEFT" spacing="8"><Label text="1" styleClass="step-num-badge"/><Label text="Public agreed numbers" styleClass="step-title"/><Region HBox.hgrow="ALWAYS"/><Button text="Example: P=23, G=5" onAction="#example" styleClass="btn-example"/><Button text="Generate numbers" onAction="#generate" styleClass="btn-accent"/></HBox>
+              <HBox spacing="12"><VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="Prime modulus · P" styleClass="field-label"/><TextField fx:id="pInput" promptText="e.g. 23" styleClass="mono-input"/></VBox><VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="Generator · G" styleClass="field-label"/><TextField fx:id="gInput" promptText="e.g. 5" styleClass="mono-input"/></VBox></HBox>
+              <HBox alignment="CENTER_LEFT" spacing="8"><Label text="P must be prime (5–997); G must be a primitive root modulo P." styleClass="micro-formula" wrapText="true"/><Region HBox.hgrow="ALWAYS"/><Button fx:id="suggestionButton" text="" onAction="#applySuggestion" styleClass="btn-example" visible="false" managed="false"/></HBox>
+            </VBox>
+            <VBox spacing="8" styleClass="step-box" VBox.vgrow="ALWAYS">
+              <HBox alignment="CENTER_LEFT" spacing="8"><Label text="2" styleClass="step-num-badge"/><Label text="Private numbers — keep secret" styleClass="step-title"/><Region HBox.hgrow="ALWAYS"/><Label text="1–9 (original algorithm)" styleClass="formula-chip"/></HBox>
+              <HBox spacing="12"><VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="Alice · PA" styleClass="field-label"/><TextField fx:id="aliceInput" promptText="Alice secret" styleClass="mono-input"/></VBox><VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="Bob · PB" styleClass="field-label"/><TextField fx:id="bobInput" promptText="Bob secret" styleClass="mono-input"/></VBox></HBox>
+              <Label text="Random keys follow the original: 1 + random.nextInt(9)." styleClass="micro-formula" wrapText="true"/>
+            </VBox>
+            <HBox spacing="10" alignment="CENTER_LEFT"><Button fx:id="computeButton" text="Generate public keys  →" styleClass="btn-primary" onAction="#compute"/><Button fx:id="exchangeButton" text="▶  Animate exchange" styleClass="btn-success" onAction="#exchange" disable="true"/><Region HBox.hgrow="ALWAYS"/></HBox>
+            <Label fx:id="inputFeedback" text="Enter your numbers, use Generate numbers, or load the textbook example." wrapText="true" styleClass="validation-neutral"/>
+            <VBox spacing="8" styleClass="step-box" VBox.vgrow="ALWAYS">
+              <HBox alignment="CENTER_LEFT" spacing="8"><Label text="3" styleClass="step-num-badge"/><Label text="Public keys calculated separately" styleClass="step-title"/></HBox>
+              <HBox spacing="12"><VBox spacing="5" HBox.hgrow="ALWAYS" styleClass="key-card-public"><Label text="ALICE · Public key (pa)" styleClass="key-title-public"/><Label fx:id="alicePublicFormula" text="pa = G^PA mod P" styleClass="math-label" wrapText="true"/><Label fx:id="alicePublicValue" text="—" styleClass="result-number"/></VBox><VBox spacing="5" HBox.hgrow="ALWAYS" styleClass="key-card-public"><Label text="BOB · Public key (pb)" styleClass="key-title-public"/><Label fx:id="bobPublicFormula" text="pb = G^PB mod P" styleClass="math-label" wrapText="true"/><Label fx:id="bobPublicValue" text="—" styleClass="result-number"/></VBox></HBox>
+              <Label text="Only pa and pb are sent. PA and PB stay on their own computers." styleClass="micro-formula" wrapText="true"/>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS" minHeight="0"/>
+            <VBox spacing="7" styleClass="formula-banner"><Label text="PUBLIC CHANNEL  ≠  SHARED SECRET" styleClass="formula-banner-title"/><Label text="Visible: P, G, pa, pb   |   Never sent: PA, PB, SA, SB" styleClass="formula-banner-math" wrapText="true"/></VBox>
+          </VBox>
+          <VBox GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" spacing="11" styleClass="phase-card" minWidth="0" maxHeight="Infinity">
+            <HBox alignment="CENTER_LEFT" spacing="10"><Label text="02 / EXCHANGE" styleClass="phase-badge-teal"/><Label text="Animated key exchange" styleClass="section-header"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="exchangeBadge" text="Not started" styleClass="status-badge-neutral"/></HBox>
+            <Label text="Follow the two public values as they cross the channel. Then each participant computes a secret locally." wrapText="true" styleClass="helper-text"/>
+            <Separator/>
+            <HBox spacing="14" alignment="CENTER" styleClass="step-box" VBox.vgrow="ALWAYS">
+              <VBox alignment="CENTER" spacing="7" styleClass="participant-card" HBox.hgrow="ALWAYS"><Label text="ALICE" styleClass="participant-name"/><Label text="PRIVATE · PA" styleClass="key-title-private"/><Label fx:id="alicePrivateLabel" text="?" styleClass="person-private-number"/><Label text="PUBLIC · pa" styleClass="key-title-public"/><Label fx:id="alicePublicLabel" text="?" styleClass="person-public-number"/></VBox>
+              <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS"><Label fx:id="forwardArrow" text="pa  ─────────▶" styleClass="exchange-arrow"/><Label fx:id="exchangeMessage" text="Public channel" styleClass="channel-text" wrapText="true"/><Label fx:id="backArrow" text="◀─────────  pb" styleClass="exchange-arrow"/></VBox>
+              <VBox alignment="CENTER" spacing="7" styleClass="participant-card" HBox.hgrow="ALWAYS"><Label text="BOB" styleClass="participant-name"/><Label text="PRIVATE · PB" styleClass="key-title-private"/><Label fx:id="bobPrivateLabel" text="?" styleClass="person-private-number"/><Label text="PUBLIC · pb" styleClass="key-title-public"/><Label fx:id="bobPublicLabel" text="?" styleClass="person-public-number"/></VBox>
+            </HBox>
+            <StackPane fx:id="animationHost" minHeight="96" prefHeight="96" styleClass="exchange-track"><Label fx:id="animationHint" text="Press Animate exchange to send pa → Bob and pb → Alice" styleClass="channel-text"/></StackPane>
+            <VBox spacing="8" styleClass="step-box" VBox.vgrow="ALWAYS">
+              <HBox alignment="CENTER_LEFT" spacing="8"><Label text="4" styleClass="step-num-badge-teal"/><Label text="Both generate their shared secret" styleClass="step-title"/></HBox>
+              <VBox spacing="4" styleClass="key-card-private"><Label text="ALICE · SA = pb^PA mod P" styleClass="key-title-private"/><Label fx:id="aliceSecretFormula" text="Waiting for the exchange…" wrapText="true" styleClass="math-label"/><Label fx:id="aliceSecretValue" text="—" styleClass="result-number"/></VBox>
+              <VBox spacing="4" styleClass="key-card-private"><Label text="BOB · SB = pa^PB mod P" styleClass="key-title-private"/><Label fx:id="bobSecretFormula" text="Waiting for the exchange…" wrapText="true" styleClass="math-label"/><Label fx:id="bobSecretValue" text="—" styleClass="result-number"/></VBox>
+            </VBox>
+            <VBox spacing="8" styleClass="formula-banner"><HBox alignment="CENTER_LEFT" spacing="10"><Label text="VERIFICATION" styleClass="formula-banner-title"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="matchBadge" text="Pending" styleClass="status-badge-neutral"/></HBox><Label fx:id="matchDetail" text="SA and SB should match, even though PA and PB were never exchanged." styleClass="formula-banner-math" wrapText="true"/></VBox>
+            <Region VBox.vgrow="ALWAYS" minHeight="0"/>
+            <HBox alignment="CENTER_LEFT" spacing="8"><Button text="↻  Replay animation" fx:id="replayButton" onAction="#exchange" styleClass="btn-secondary" disable="true"/><Region HBox.hgrow="ALWAYS"/><Label text="Educational demo · not secure for real-world use" styleClass="micro-formula"/></HBox>
+          </VBox>
+        </GridPane>
+      </content>
+    </ScrollPane>
+  </center>
+  <bottom><HBox alignment="CENTER_LEFT" spacing="12" styleClass="footer-bar"><padding><Insets top="9" right="20" bottom="9" left="20"/></padding><Label fx:id="footerStatus" text="READY  •  Diffie–Hellman classroom simulation" styleClass="footer-status"/><Region HBox.hgrow="ALWAYS"/><Label text="JDK 21  /  JAVAFX 21  /  MODEL + VIEW" styleClass="footer-telemetry"/></HBox></bottom>
+</BorderPane>
